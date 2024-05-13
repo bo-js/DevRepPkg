@@ -2,6 +2,7 @@
 title: "Replication: Urban Public Works in Spatial Equilibrium"
 author: "Bo Jacobs Strom"
 date: "April 2024"
+
 format: 
     html: 
         code-overflow: wrap
@@ -21,9 +22,9 @@ Make sure we have the right Working Directory and Julia Environment, change stri
 cd("/Users/bojs/Desktop/Development/replication_public")
 
 # Pkg commands not needed if knitting quarto document
-using Pkg
-Pkg.activate("DevRepPkg")
-Pkg.instantiate()
+# using Pkg
+# Pkg.activate("DevRepPkg")
+# Pkg.instantiate()
 
 # Only needed if setting up RCall for the first time
 # ENV["R_HOME"] = "/Library/Frameworks/R.framework/Resources"
@@ -404,7 +405,10 @@ T2a = regtable(
         Nobs => "Observations"
     ]
 )
-
+output_file = "tables_rep/_table2a.html"
+open(output_file, "w") do f
+    write(f, string(T2a))
+end
 ```
 
 Table 2b: Eligible Households
@@ -432,14 +436,18 @@ T2b = regtable(
         Nobs => "Observations"
     ]
 )
+output_file = "tables_rep/_table2b.html"
+open(output_file, "w") do f
+    write(f, string(T2b))
+end
 ```
 
 Table 2c: Ineligible Households
 
 ```{julia}
 #| output: true
-# Panel B
-T2b = regtable(
+# Panel C
+T2c = regtable(
     r_work_inel, r_pw_inel, r_nonpw_inel, r_index_quality_inel;
     render = HtmlTable(),
     labels = Dict(
@@ -459,6 +467,10 @@ T2b = regtable(
         Nobs => "Observations"
     ]
 )
+output_file = "tables_rep/_table2c.html"
+open(output_file, "w") do f
+    write(f, string(T2c))
+end
 ```
 
 ## Wage Effects
@@ -507,6 +519,8 @@ plot!(xs1, ys1, seriescolor = "orange", label = false)
 # Add Labels for Axes
 xlabel!("Exposure")
 ylabel!("Log Wages")
+
+savefig("DevRepPkg/fig3.png")
 ```
 
 
@@ -654,6 +668,11 @@ T3 = regtable(
     ]
 )
 
+output_file = "tables_rep/_table3.html"
+open(output_file, "w") do f
+    write(f, string(T3))
+end
+
 ```
 
 ## T4 Valuing Amenities through correlation with rent.
@@ -692,6 +711,11 @@ T4 = regtable(
         Nobs => "Observations"
     ]
 )
+
+output_file = "tables_rep/_table4.html"
+open(output_file, "w") do f
+    write(f, string(T4))
+end
 ```
 
 ## T5 Gravity
@@ -793,7 +817,7 @@ suppressWarnings({
 
 ## Model Parameters
 
-I now follow the authors in paraemtrizing the model using the experimental results:
+I now follow the authors using the experimental results to parametrize the model as follows:
 
 -   $\Delta L_i$ is the change in total employment in the reduced form ITT.
 
@@ -853,16 +877,21 @@ beta_i = FixedEffectModels.coef(r_rent_quality_controls)[1]*FixedEffectModels.co
 wage_effect_naive = FixedEffectModels.coef(r_naive)[1]
 
 params = Dict(
-    latexify("w_g") => w_g,
-    latexify("θ") => theta,
-    latexify("L_i") => L_i,
-    latexify("Δ L_i") => Delta_L_i,
-    latexify("p") => p,
+    "w_g" => w_g,
+    "θ" => theta,
+    "L_i" => L_i,
+    "Δ L_i" => Delta_L_i,
+    "p" => p,
     "Wage Effect" => wage_effect,
-    latexify("β_i") => beta_i
+    "β_i" => beta_i
 )
 
-pretty_table(params, backend = Val(:html))
+param_tab = pretty_table(params, backend = Val(:html))
+
+output_file = "tables_rep/_param_tab.html"
+open(output_file, "w") do f
+    write(f, string(param_tab))
+end
 ```
 
 ## T6 Welfare
@@ -1000,5 +1029,10 @@ rollout = ["Treatment", "Exposure", "Direct Effect", "Direct + Wage Effects", "D
 t6 = hcat(rollout, round.(Matrix(table_by_selected), digits = 3)', round.(Matrix(table_full), digits = 3)')
 
 T6 = pretty_table(t6, header = ["Roll-out", "Control", "Treatment", "All"], backend = Val(:html))
+
+output_file = "tables_rep/_table6.html"
+open(output_file, "w") do f
+    write(f, string(T6))
+end
 
 ```
