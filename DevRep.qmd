@@ -520,7 +520,7 @@ plot!(xs1, ys1, seriescolor = "orange", label = false)
 xlabel!("Exposure")
 ylabel!("Log Wages")
 
-savefig("DevRepPkg/fig3.png")
+savefig("DevRepPkg/website/fig3.png")
 ```
 
 
