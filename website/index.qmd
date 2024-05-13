@@ -36,6 +36,73 @@ $$
 I now succesfully replicate figure three. Figure three is a scatter plot of average log wages in an area on the exposure variable above, separated into those areas which were actually treated and those that were not, showing a similar positive association between exposure and wages, with little discontinuity between the two groups.
 
 ![Figure 3](fig3.png)
+
+### T3 Wage Effects
+Table three presents the results of both the exposure specification presented above, and a simple regression with controls of log wages at origin on treatment at origin, which for the reasoning above does likely not produce an unbiased estimate due to violations of SUTVA.
+
+{{< include ../../tables_rep/_table3.html >}}
+
+
+
+
+## T4 Valuing Amenities through correlation with rent.
+
+I now replicate table four. To estimate the welfare value of the improvements to neighbourhood amenities estimated in table 2 above, it is necessary to convert these into a monetary equivalent, to do this the authors combine information on rents paid by households who do pay rent and estimated hypothetical rents for those who do not. To deal with potential omitted variable bias, i.e. characteristics that may be correlated both with neighborhood quality and rents, the authors implement a double post-selection lasso procedure to select the controls which best predict either neighborhood quality or rents. My results are almost identical to the original specification, but I seem to have a slightly larger sample which leads to small differences.
+
+{{< include ../../tables_rep/_table4.html >}}
+
+## T5 Gravity
+
+I now replicate table five, where the authors the commuting probability on the log wage at destination, in order to identify the key model parameter $\theta$, which is known as the Frechet parameter - or the elasticity of commuting probability to distance. The authors leverage the experiment by instrumenting the log wage at destination with the destination's exposure to treatment, in the following specification where $d$ is log walking time and $\nu_i$ is a residence fixed effect:
+
+$$ 
+\ln \pi_{ij} =\theta \ln w_j + \kappa \theta \ln d_{ij} + \nu_i + \varepsilon_{ij}
+$$
+
+Unlike my main five replication results, I replicate this result mainly using the original R code and the `RCall` package in Julia. While I originally intended for this to be one of my five main replicated results, I was unable to use the `GLM.jl` package for the necessary poission regressions. I think this may be something to do with problems dealing with imported Stata `.dta` files with `GLM.jl`, which is not compatible with the `Float32` data-type most `.dta` data is imported into Julia as, however problems persisted after converting to `Float64` despite the package working with other data. As a result I decided to replicate another result in Julia, but I still included this using `RCall` as it is a key result which is necessary to then construct table 6. My results are identical, except for a slightly larger standard error on the effect of log destination wage on commuting probability.
+
+{{< include ../../tables_rep/_table5.html >}}
+
+## Model Parameters
+
+I now follow the authors using the experimental results to parametrize the model as follows:
+
+-   $\Delta L_i$ is the change in total employment in the reduced form ITT.
+
+-   $p$ is the change in private sector employment in the reduced form ITT.
+
+-   $L_i$ is the employment rate in the control.
+
+-   The wage premium $g$ is the difference between log earning on public works at endline in treatment and log earnings on private sector work at baseline.
+
+-   The change in the wage at destination is a function of exposure to the treatment: $$\widehat{w_j}=\delta*\sum_k \pi_{kj} T_k$$
+
+    where $\delta$ is the coefficient on exposure in the previous estimation.
+
+-   $\beta_i$ is the product between the increase in neighborhood quality and the correlation between neighborhood quality and rents.
+
+-   $\theta$ comes from the gravity equation.
+
+Note that `FE_W_woreda_weight` variable does not appear to be available in the provided dataset, so non-individual means are unweighted (unless the variables have been pre-weighted or something).
+
+{{< include ../../tables_rep/_param_tab.html >}}
+
+## T6 Welfare
+
+Using the paremetrization above I now replicate table six, which uses the model to conduct a welfare analysis of the effects of the program on both control and treatment groups for the partial rollout of the program, as well as for a hypothetical complete rollout of the program. My results slightly differ from those in the paper, but are very close throughout. From the model, the expression of changes in welfare is the following:
+
+$$  
+\widehat{U_{i}} = (1+\beta_i)\left[ p T_i  (1+g_i) \pi_{ii}^{\frac{1}{\theta}} + (1-p T_i) \left(\sum_j \pi_{ij} (\widehat{w_{j}})^\theta\right)^{\frac{1}{\theta}}\right]
+$$ 
+And we can benchmark the welfare effects of the program with a cash transfer.
+
+$$
+\widehat{U_{i}^{cash}}=\left[1+p (1+g_i)\pi_{ii}^{\frac{1}{\theta}} \right]
+$$
+
+{{< include ../../tables_rep/_table6.html >}}
+
+
 This is a Quarto website.
 
 To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
