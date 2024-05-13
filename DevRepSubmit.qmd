@@ -1,9 +1,4 @@
 ---
-project:
-  type: website
-  output-dir: docs
-
-
 title: "Replication: Urban Public Works in Spatial Equilibrium"
 author: "Bo Jacobs Strom"
 date: "May 2024"
@@ -51,6 +46,9 @@ I now succesfully replicate figure three. Figure three is a scatter plot of aver
 Table three presents the results of both the exposure specification presented above, and a simple regression with controls of log wages at origin on treatment at origin, which for the reasoning above does likely not produce an unbiased estimate due to violations of SUTVA.
 
 {{< include ../tables_rep/_table3.html >}}
+
+
+
 
 ## T4 Valuing Amenities through correlation with rent.
 

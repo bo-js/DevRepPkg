@@ -886,11 +886,11 @@ params = Dict(
     "β_i" => beta_i
 )
 
-param_tab = pretty_table(params, backend = Val(:html))
+param_tab = pretty_table(String, params, backend = Val(:html))
 
 output_file = "tables_rep/_param_tab.html"
 open(output_file, "w") do f
-    write(f, string(param_tab))
+    write(f, param_tab)
 end
 ```
 
@@ -1028,11 +1028,11 @@ rollout = ["Treatment", "Exposure", "Direct Effect", "Direct + Wage Effects", "D
 
 t6 = hcat(rollout, round.(Matrix(table_by_selected), digits = 3)', round.(Matrix(table_full), digits = 3)')
 
-T6 = pretty_table(t6, header = ["Roll-out", "Control", "Treatment", "All"], backend = Val(:html))
+T6 = pretty_table(String, t6, header = ["Roll-out", "Control", "Treatment", "All"], backend = Val(:html))
 
 output_file = "tables_rep/_table6.html"
 open(output_file, "w") do f
-    write(f, string(T6))
+    write(f, T6)
 end
 
 ```
